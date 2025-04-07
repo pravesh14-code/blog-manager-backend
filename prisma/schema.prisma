@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]v
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum BlogCategory {
+  Coding
+  Technology
+  Travel
+  Lifestyle
+}
+
+model User {
+  id          Int         @id @default(autoincrement())
+  full_name   String
+  email       String      @unique
+  password    String
+  profile_pic String?     
+  created_at  DateTime    @default(now())
+
+  posts       BlogPost[]
+  comments    Comment[]
+  likes       PostLike[]
+  savedPosts  SavedPost[]
+}
+
+model BlogPost {
+  id         Int           @id @default(autoincrement())
+  user_id    Int
+  title      String
+  content    String
+  category   BlogCategory
+  is_public  Boolean       @default(false)
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+
+  author     User          @relation(fields: [user_id], references: [id])
+  comments   Comment[]
+  media      PostMedia[]
+  likes      PostLike[]
+  savedBy    SavedPost[]
+}
+
+model Comment {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  post_id    Int
+  content    String
+  created_at DateTime  @default(now())
+
+  post       BlogPost  @relation(fields: [post_id], references: [id])
+  author     User      @relation(fields: [user_id], references: [id])
+}
+
+model PostMedia {
+  id          Int       @id @default(autoincrement())
+  post_id     Int
+  media_data  String    // base64-encoded media string
+  media_type  String
+  created_at  DateTime  @default(now())
+
+  post        BlogPost  @relation(fields: [post_id], references: [id])
+}
+
+model PostLike {
+  user_id    Int
+  post_id    Int
+  created_at DateTime  @default(now())
+
+  user       User      @relation(fields: [user_id], references: [id])
+  post       BlogPost  @relation(fields: [post_id], references: [id])
+
+  @@id([user_id, post_id]) // Composite Primary Key
+}
+
+model SavedPost {
+  user_id    Int
+  post_id    Int
+  created_at DateTime  @default(now())
+
+  user       User      @relation(fields: [user_id], references: [id])
+  post       BlogPost  @relation(fields: [post_id], references: [id])
+
+  @@id([user_id, post_id]) // Composite Primary Key
+}
