@@ -6,7 +6,6 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 5000;
 
-// Optional: test DB connection
 async function testDB() {
   try {
     await prisma.$connect();

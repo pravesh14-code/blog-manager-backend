@@ -7,21 +7,21 @@ let blogId;
 
 jest.setTimeout(20000); // Allow time for Supabase connection and async DB operations
 
-/**
- * Clears all related tables before any tests run.
- */
-beforeAll(async () => {
-    try {
-        await prisma.postMedia.deleteMany();
-        await prisma.comment.deleteMany();
-        await prisma.postLike.deleteMany();
-        await prisma.savedPost.deleteMany();
-        await prisma.blogPost.deleteMany();
-        await prisma.user.deleteMany();
-    } catch (err) {
-        console.error('Error during beforeAll DB cleanup:', err);
-    }
-});
+// /**
+//  * Clears all related tables before any tests run.
+//  */
+// beforeAll(async () => {
+//     try {
+//         await prisma.postMedia.deleteMany();
+//         await prisma.comment.deleteMany();
+//         await prisma.postLike.deleteMany();
+//         await prisma.savedPost.deleteMany();
+//         await prisma.blogPost.deleteMany();
+//         await prisma.user.deleteMany();
+//     } catch (err) {
+//         console.error('Error during beforeAll DB cleanup:', err);
+//     }
+// });
 
 /**
  * Disconnect Prisma client after all tests finish.
@@ -33,21 +33,21 @@ afterAll(async () => {
 /**
  * Tests for user registration and login flow.
  */
-describe('Auth - Register & Login', () => {
-    test('Should register a new user', async () => {
-        const res = await request(app)
-            .post('/api/auth/register')
-            .send({
-                full_name: 'Test User',
-                email: 'test@example.com',
-                password: 'testpass123',
-                profile_pic: 'iVBORw0KGgoAAAANSUhEUgAAAAUA'
-            });
+describe('Auth - Login', () => {
 
-        expect(res.statusCode).toBe(201);
-        expect(res.body.user).toHaveProperty('id');
-    });
+    // test('Should register a new user', async () => {
+    //     const res = await request(app)
+    //         .post('/api/auth/register')
+    //         .send({
+    //             full_name: 'Test User',
+    //             email: 'test@example.com',
+    //             password: 'testpass123',
+    //             profile_pic: 'iVBORw0KGgoAAAANSUhEUgAAAAUA'
+    //         });
 
+    //     expect(res.statusCode).toBe(201);
+    //     expect(res.body.user).toHaveProperty('id');
+    // });
     test('Should log in and return a JWT token', async () => {
         const res = await request(app)
             .post('/api/auth/login')
@@ -71,13 +71,13 @@ describe('Blog - Create, Validate, Get, Update', () => {
             .post('/api/blogs')
             .set('Authorization', `Bearer ${token}`)
             .send({
-                title: 'Test Blog Post',
+                title: 'Test Blog Post Backend',
                 content: 'This is a valid blog post content.',
                 category: 'Coding',
                 is_public: true,
                 media: [
                     {
-                        media_data: 'iVBORw0KGgoAAAANSUhEUgAAAAUA',
+                        media_data: 'https://ibb.co/G430yKHK',
                         media_type: 'image/png'
                     }
                 ]

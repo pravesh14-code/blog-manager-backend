@@ -24,5 +24,27 @@ exports.create = async (blogData) => {
   return post;
 };
 
-exports.update = (id, data) => Blog.update(id, data);
+exports.update = async (id, blogData) => {
+  const { media, ...updateData } = blogData;
+
+  const updatedPost = await Blog.update(id, updateData);
+
+  if (media?.length) {
+    for (const item of media) {
+      if (item.id) {
+        await Blog.updateMedia(item); // Update existing media
+      } else {
+        await Blog.createMedia({
+          post_id: id,
+          media_data: item.media_data,
+          media_type: item.media_type,
+        }); 
+      }
+    }
+  }
+
+  return updatedPost;
+};
+
+
 exports.remove = (id) => Blog.remove(id);

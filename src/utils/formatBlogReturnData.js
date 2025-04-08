@@ -16,9 +16,10 @@ const formatBlogReturnData = (blogs) => {
     category: blog.category,
     is_public: blog.is_public,
     media: blog.media.map(item => item.media_data),
-    created_at: formatDate(blog.created_at),  
+    created_at: formatDate(blog.created_at),
     commentCount: blog.comments.length,
     likeCount: blog.likes.length,
+    savedBy: blog.savedBy || [],
   }));
 };
 
