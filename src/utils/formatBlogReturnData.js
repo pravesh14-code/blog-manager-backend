@@ -20,6 +20,7 @@ const formatBlogReturnData = (blogs) => {
     commentCount: blog.comments.length,
     likeCount: blog.likes.length,
     savedBy: blog.savedBy || [],
+    likesBy: blog.likes || []
   }));
 };
 
